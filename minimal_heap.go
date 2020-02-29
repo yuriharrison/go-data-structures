@@ -3,11 +3,12 @@ package main
 // Minimal Heap implementation with dynamic array
 
 type MinHeap struct {
-	cap       int
-	degree    int
-	heap      []IntEvaluable
-	parent    []int
-	leftChild []int
+	useStaticArray bool
+	cap            int
+	degree         int
+	heap           []IntEvaluable
+	parent         []int
+	leftChild      []int
 }
 
 type IMinHeap interface {
@@ -17,7 +18,7 @@ type IMinHeap interface {
 	Clear()
 	Add(value IntEvaluable)
 	Peak() IntEvaluable
-	Pool() IntEvaluable
+	Poll() IntEvaluable
 }
 
 type IntEvaluable interface {
@@ -34,6 +35,12 @@ func (h *MinHeap) Init() {
 	h.heap = make([]IntEvaluable, 0, h.cap)
 	h.parent = make([]int, 0, h.cap)
 	h.leftChild = make([]int, 0, h.cap)
+	if h.useStaticArray {
+		for i := 0; i < h.cap; i++ {
+			h.parent = append(h.parent, h.parentIndex(i))
+			h.leftChild = append(h.leftChild, h.childIndex(i))
+		}
+	}
 }
 
 func (h *MinHeap) parentIndex(i int) int {
@@ -59,8 +66,10 @@ func (h *MinHeap) Clear() {
 func (h *MinHeap) Add(value IntEvaluable) {
 	h.heap = append(h.heap, value)
 	i := h.Size() - 1
-	h.parent = append(h.parent, h.parentIndex(i))
-	h.leftChild = append(h.leftChild, h.childIndex(i))
+	if !h.useStaticArray {
+		h.parent = append(h.parent, h.parentIndex(i))
+		h.leftChild = append(h.leftChild, h.childIndex(i))
+	}
 	h.swim(i)
 }
 
@@ -68,7 +77,7 @@ func (h *MinHeap) Peak() IntEvaluable {
 	return h.heap[0]
 }
 
-func (h *MinHeap) Pool() (root IntEvaluable) {
+func (h *MinHeap) Poll() (root IntEvaluable) {
 	root = h.heap[0]
 	last := h.Size() - 1
 	h.heap[0] = h.heap[last]

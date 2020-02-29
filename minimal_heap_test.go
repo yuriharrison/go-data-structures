@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"testing"
 )
 
@@ -21,9 +22,35 @@ func TestMinimalHeap(t *testing.T) {
 	}
 	for _, v := range sorted[:half] {
 		if r := heap.Peak(); r != nil {
-			if heap.Pool() != v {
+			if heap.Poll() != v {
 				t.Errorf("Expecting %q got %q", v, r)
 			}
 		}
 	}
+}
+
+func buildWithRand(n int) (heap IMinHeap) {
+	heap = &MinHeap{cap: n, useStaticArray: true}
+	heap.Init()
+	for i := 0; i < n; i++ {
+		v := IntEva(rand.Intn(n))
+		heap.Add(v)
+	}
+	return
+}
+
+func peekAndPollAll(heap IMinHeap) {
+	for !heap.IsEmpty() {
+		if peek := heap.Peak(); peek != nil {
+			poll := heap.Poll()
+			if peek != poll {
+				panic("peek and poll are diferente!")
+			}
+		}
+	}
+}
+
+func BenchmarkMinimalHeap(b *testing.B) {
+	heap := buildWithRand(b.N)
+	peekAndPollAll(heap)
 }
