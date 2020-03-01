@@ -25,7 +25,7 @@ func (ht *HashTable) Init() {
 }
 
 func (ht HashTable) hash(key string) uint8 {
-g	var hash uint8 = uint8(len(key) % 256)
+	var hash uint8 = uint8(len(key) % 256)
 	for _, b := range []byte(key) {
 		hash = uint8(ht.lkpTable[hash^uint8(b)])
 	}
