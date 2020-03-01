@@ -25,14 +25,14 @@ func (ht *HashTable) Init() {
 }
 
 func (ht HashTable) hash(key string) uint8 {
-	var value uint8 = uint8(len(key) % 256)
+g	var hash uint8 = uint8(len(key) % 256)
 	for _, b := range []byte(key) {
-		value = uint8(ht.lkpTable[value^uint8(b)])
+		hash = uint8(ht.lkpTable[hash^uint8(b)])
 	}
-	if value < 0 {
+	if hash < 0 {
 		panic(ht.lkpTable)
 	}
-	return value
+	return hash
 }
 
 // Set value on table
