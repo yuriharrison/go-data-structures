@@ -1,8 +1,7 @@
 package main
 
-// Minimal Heap implementation with dynamic array
-
-type MinHeap struct {
+// Heap Heap implementation with dynamic array
+type Heap struct {
 	useStaticArray bool
 	cap            int
 	degree         int
@@ -11,21 +10,24 @@ type MinHeap struct {
 	leftChild      []int
 }
 
-type IMinHeap interface {
+// IHeap interface
+type IHeap interface {
 	Init()
 	Size() int
 	IsEmpty() bool
 	Clear()
 	Add(value IntEvaluable)
-	Peak() IntEvaluable
+	Peek() IntEvaluable
 	Poll() IntEvaluable
 }
 
+// IntEvaluable interface
 type IntEvaluable interface {
 	Value() int
 }
 
-func (h *MinHeap) Init() {
+// Init initialize heap properties
+func (h *Heap) Init() {
 	if h.degree == 0 {
 		h.degree = 2
 	}
@@ -43,27 +45,31 @@ func (h *MinHeap) Init() {
 	}
 }
 
-func (h *MinHeap) parentIndex(i int) int {
+func (h *Heap) parentIndex(i int) int {
 	return (i - 1) / h.degree
 }
 
-func (h *MinHeap) childIndex(i int) int {
+func (h *Heap) childIndex(i int) int {
 	return i*h.degree + 1
 }
 
-func (h *MinHeap) Size() int {
+// Size of the heap
+func (h *Heap) Size() int {
 	return len(h.heap)
 }
 
-func (h *MinHeap) IsEmpty() bool {
+// IsEmpty heap
+func (h *Heap) IsEmpty() bool {
 	return len(h.heap) == 0
 }
 
-func (h *MinHeap) Clear() {
+// Clear reset heap
+func (h *Heap) Clear() {
 	h.heap = nil
 }
 
-func (h *MinHeap) Add(value IntEvaluable) {
+// Add new element to heap
+func (h *Heap) Add(value IntEvaluable) {
 	h.heap = append(h.heap, value)
 	i := h.Size() - 1
 	if !h.useStaticArray {
@@ -73,11 +79,13 @@ func (h *MinHeap) Add(value IntEvaluable) {
 	h.swim(i)
 }
 
-func (h *MinHeap) Peak() IntEvaluable {
+// Peek peek next element
+func (h *Heap) Peek() IntEvaluable {
 	return h.heap[0]
 }
 
-func (h *MinHeap) Poll() (root IntEvaluable) {
+// Poll get the next element from heap
+func (h *Heap) Poll() (root IntEvaluable) {
 	root = h.heap[0]
 	last := h.Size() - 1
 	h.heap[0] = h.heap[last]
@@ -86,7 +94,7 @@ func (h *MinHeap) Poll() (root IntEvaluable) {
 	return
 }
 
-func (h *MinHeap) sink(i int) {
+func (h *Heap) sink(i int) {
 	for mci := h.minChild(i); h.requireSwapDown(i, mci); {
 		h.swap(i, mci)
 		i = mci
@@ -94,7 +102,7 @@ func (h *MinHeap) sink(i int) {
 	}
 }
 
-func (h *MinHeap) swim(i int) {
+func (h *Heap) swim(i int) {
 	for pi := h.parent[i]; h.requireSwapUp(i, pi); {
 		h.swap(i, pi)
 		i = pi
@@ -102,12 +110,12 @@ func (h *MinHeap) swim(i int) {
 	}
 }
 
-func (h *MinHeap) swap(i, j int) {
+func (h *Heap) swap(i, j int) {
 	iValue := h.heap[i]
 	h.heap[i], h.heap[j] = h.heap[j], iValue
 }
 
-func (h *MinHeap) minChild(i int) int {
+func (h *Heap) minChild(i int) int {
 	mci := -1
 	leftChildIdx := h.leftChild[i]
 	lastIdx := h.Size() - 1
@@ -126,7 +134,7 @@ func (h *MinHeap) minChild(i int) int {
 	return mci
 }
 
-func (h *MinHeap) requireSwapDown(i, j int) bool {
+func (h *Heap) requireSwapDown(i, j int) bool {
 	switch {
 	case j == -1:
 		return false
@@ -137,13 +145,13 @@ func (h *MinHeap) requireSwapDown(i, j int) bool {
 	}
 }
 
-func (h *MinHeap) requireSwapUp(i, j int) bool {
+func (h *Heap) requireSwapUp(i, j int) bool {
 	if i < 1 {
 		return false
 	}
 	return h.lt(i, j)
 }
 
-func (h *MinHeap) lt(i, j int) bool {
+func (h *Heap) lt(i, j int) bool {
 	return h.heap[i].Value() < h.heap[j].Value()
 }

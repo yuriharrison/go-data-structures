@@ -12,7 +12,7 @@ func (v IntEva) Value() int {
 }
 
 func TestMinimalHeap(t *testing.T) {
-	var heap IMinHeap = &MinHeap{cap: 4}
+	var heap IHeap = &Heap{cap: 4}
 	heap.Init()
 	numbers := []IntEva{5, 3, 6, 2, 1, 9, 2, 7}
 	sorted := []IntEva{1, 2, 2, 3, 5, 6, 7, 9}
@@ -21,7 +21,7 @@ func TestMinimalHeap(t *testing.T) {
 		heap.Add(n)
 	}
 	for _, v := range sorted[:half] {
-		if r := heap.Peak(); r != nil {
+		if r := heap.Peek(); r != nil {
 			if heap.Poll() != v {
 				t.Errorf("Expecting %q got %q", v, r)
 			}
@@ -29,8 +29,8 @@ func TestMinimalHeap(t *testing.T) {
 	}
 }
 
-func buildWithRand(n int) (heap IMinHeap) {
-	heap = &MinHeap{cap: n, useStaticArray: true}
+func buildWithRand(n int) (heap IHeap) {
+	heap = &Heap{cap: n, useStaticArray: true}
 	heap.Init()
 	for i := 0; i < n; i++ {
 		v := IntEva(rand.Intn(n))
@@ -39,9 +39,9 @@ func buildWithRand(n int) (heap IMinHeap) {
 	return
 }
 
-func peekAndPollAll(heap IMinHeap) {
+func peekAndPollAll(heap IHeap) {
 	for !heap.IsEmpty() {
-		if peek := heap.Peak(); peek != nil {
+		if peek := heap.Peek(); peek != nil {
 			poll := heap.Poll()
 			if peek != poll {
 				panic("peek and poll are diferente!")
