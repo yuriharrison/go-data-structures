@@ -32,7 +32,7 @@ func TestMinimalHeap(t *testing.T) {
 func buildWithRand(n int) (heap IHeap) {
 	heap = &Heap{cap: n, useStaticArray: true}
 	heap.Init()
-	for i := 0; i < n; i++ {
+	for i := 0; i < n; i++ { 
 		v := IntEva(rand.Intn(n))
 		heap.Add(v)
 	}
