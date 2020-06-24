@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
-type Number uint32
+type Number int
 
-func (v Number) Value() uint32 {
-	return uint32(v)
+func (v Number) Value() int {
+	return int(v)
 }
 
 func TestBinarySeachTree(t *testing.T) {
@@ -23,6 +22,9 @@ func TestBinarySeachTree(t *testing.T) {
 	if largest := bst.Largest(); largest.Value() != 22 {
 		t.Errorf("Expecting %v got %v", 22, largest.Value())
 	}
+
+	// non existent value, should not crash
+	bst.Remove(666)
 
 	iter := bst.Traverse()
 	traverseCount := 0

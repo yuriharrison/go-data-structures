@@ -46,6 +46,8 @@ func (bst *BinarySearchTree) Remove(value int) {
 	var rRemove func(n *node, v int) *node
 	rRemove = func(n *node, v int) *node {
 		switch {
+		case n == nil:
+			return n
 		case n.gt(v):
 			n.left = rRemove(n.left, v)
 		case n.lt(v):
